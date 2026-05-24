@@ -160,10 +160,15 @@ ${destinations.map(d => `- ${d.name} in ${d.state} (${d.category}): Cost is ₹$
       'Content-Length': Buffer.byteLength(requestBody)
     }
   }, (geminiRes) => {
+    console.log(`Gemini API status: ${geminiRes.statusCode}`);
     let buffer = '';
 
     geminiRes.on('data', (chunk) => {
-      buffer += chunk.toString();
+      const chunkStr = chunk.toString();
+      if (geminiRes.statusCode !== 200) {
+        console.error("Gemini Error payload:", chunkStr);
+      }
+      buffer += chunkStr;
       
       // Normalize CRLF to LF as requested in Phase 5
       buffer = buffer.replace(/\r\n/g, '\n');
