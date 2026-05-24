@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderWise — Find Your Next Indian Adventure with Tara</title>
+  <meta name="description" content="Discover stunning Indian mountains, beaches, heritage cities, and hidden gems with WanderWise. Let Tara, our friendly AI guide, plan your next trip in Hinglish!">
+  
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="app-header">
+    <div class="logo">
+      <span class="logo-icon">🧭</span> Wander<span>Wise</span>
+    </div>
+    <div class="header-controls">
+      <button id="audio-toggle" class="audio-btn" aria-label="Toggle Background Sound">
+        <span class="audio-icon">🔇</span> <span class="audio-text">Mute</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Section 1: Welcome Screen -->
+    <section id="welcome" class="hero-section">
+      <div class="hero-bg-overlay"></div>
+      <div class="paper-plane-container" id="plane-container"></div>
+      
+      <div class="hero-content">
+        <h1 class="hero-title">Duniya Dekhni Hai?<br><span class="highlight">Chalo Shuru Karte Hain</span></h1>
+        <p class="hero-subtitle">Explore India's breathtaking locales, hand-picked for the wanderer in you. Tara, our friendly Hinglish AI guide, is ready to help you plan!</p>
+        <button id="start-btn" class="cta-button">START EXPLORING <span class="arrow">→</span></button>
+      </div>
+      
+      <div class="scroll-down-indicator">
+        <span>Scroll to Explore</span>
+        <div class="mouse-icon">
+          <div class="wheel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Destinations -->
+    <section id="destinations" class="destinations-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Khubsoorat Destinations</h2>
+          <p class="section-subtitle">Choose a category to view handpicked getaways across India. Check out Tara's Top Picks!</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+          <button class="filter-btn active" data-category="all">All Places</button>
+          <button class="filter-btn" data-category="mountains">🏔️ Mountains</button>
+          <button class="filter-btn" data-category="beaches">🏖️ Beaches</button>
+          <button class="filter-btn" data-category="heritage">🕌 Heritage Cities</button>
+          <button class="filter-btn" data-category="gems">💎 Hidden Gems</button>
+        </div>
+
+        <!-- Destinations Grid -->
+        <div id="destinations-grid" class="destinations-grid">
+          <!-- Dynamically loaded cards -->
+          <div class="loading-placeholder">Tara is gathering destinations...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: About -->
+    <section id="about" class="about-section">
+      <div class="container about-grid">
+        <div class="about-visual">
+          <div class="compass-wrapper">
+            <div class="compass-ring"></div>
+            <div class="compass-rose">
+              <div class="compass-pointer"></div>
+            </div>
+            <div class="compass-label north">N</div>
+            <div class="compass-label south">S</div>
+            <div class="compass-label east">E</div>
+            <div class="compass-label west">W</div>
+          </div>
+        </div>
+        <div class="about-content">
+          <h2 class="about-title">Dil Se Hindustani, Mind Se Globetrotter</h2>
+          <p class="about-text">WanderWise connects you to the true essence of India. Whether you want to conquer snowy mountain peaks, sunbathe on pristine sands, revisit historic empires, or lose yourself in untouched wilderness—we have it all mapped out.</p>
+          
+          <div class="stats-container" id="stats-section">
+            <div class="stat-item">
+              <div class="stat-number" id="stat-travellers" data-target="50000">0</div>
+              <div class="stat-label">Happy Travellers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number" id="stat-destinations" data-target="16">0</div>
+              <div class="stat-label">Curated Spots</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Ticker -->
+  <footer class="app-footer">
+    <div class="footer-ticker-wrap">
+      <div class="footer-ticker">
+        <div class="ticker-item">Powered by wanderlust •</div>
+        <div class="ticker-item">Tara ne khud explore kiya •</div>
+        <div class="ticker-item">Made with chai and curiosity •</div>
+        <div class="ticker-item">India awaits you •</div>
+        <div class="ticker-item">Ghumo Dil Khol Ke •</div>
+        <div class="ticker-item">Powered by wanderlust •</div>
+        <div class="ticker-item">Tara ne khud explore kiya •</div>
+        <div class="ticker-item">Made with chai and curiosity •</div>
+        <div class="ticker-item">India awaits you •</div>
+        <div class="ticker-item">Ghumo Dil Khol Ke •</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Chat Button and Panel -->
+  <div class="chat-widget-container">
+    <button id="chat-toggle-btn" class="chat-toggle-btn" aria-label="Chat with Tara">
+      <span class="chat-toggle-icon">💬</span>
+      <span class="chat-notification-dot"></span>
+      <span class="chat-btn-text">Talk to Tara</span>
+    </button>
+
+    <div id="chat-panel" class="chat-panel">
+      <div class="chat-panel-header">
+        <div class="chat-avatar">👩🏽</div>
+        <div class="chat-tara-info">
+          <h3>Tara</h3>
+          <p class="status">⚡ Online (Hinglish Travel Guide)</p>
+        </div>
+        <button id="chat-close-btn" class="chat-close-btn" aria-label="Close Chat">&times;</button>
+      </div>
+
+      <div id="chat-messages" class="chat-messages">
+        <div class="message tara-msg">
+          <div class="msg-bubble">
+            Namaste yaara! Main hoon Tara, aapki digital travel guide. Kahan ghumne ka man hai aaj? 🏔️ beaches, mountains, heritage spots ya hidden gems? Kuch suggest karoon?
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Reply Chips -->
+      <div class="quick-reply-container">
+        <button class="quick-chip">Best place for monsoon?</button>
+        <button class="quick-chip">Budget-friendly trips?</button>
+        <button class="quick-chip">Honeymoon destinations?</button>
+        <button class="quick-chip">Adventure spots?</button>
+      </div>
+
+      <div class="chat-panel-footer">
+        <form id="chat-form">
+          <input type="text" id="chat-input" placeholder="Type in English/Hinglish (e.g. suggest a beach)..." required autocomplete="off">
+          <button type="submit" id="chat-submit-btn" class="chat-send-btn">
+            <span class="send-icon">➔</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wishlist Modal -->
+  <div id="wishlist-modal" class="modal-overlay">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <div class="modal-body">
+        <div class="modal-icon">✈️</div>
+        <h2>Added to your wishlist!</h2>
+        <p>Mast choice! Tara has noted down your preference. We'll start planning your details soon.</p>
+        <button class="modal-btn" id="modal-ok-btn">Mast! Shuru Karo</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=1"></script>
+</body>
+</html>
