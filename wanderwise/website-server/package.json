@@ -1,0 +1,12 @@
+{
+  "name": "wanderwise-website-server",
+  "version": "1.0.0",
+  "description": "Static server for WanderWise frontend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
