@@ -4,7 +4,7 @@
 // 1. API Base configuration
 const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '')
   ? 'http://localhost:3001'
-  : 'https://wanderwise-api-86qw.onrender.com'; // We will update this placeholder on deployment if needed
+  : 'https://ai-engineering-ieau.onrender.com';
 
 // Unsplash images mapped to destinations to look extremely premium
 const IMAGE_MAP = {
