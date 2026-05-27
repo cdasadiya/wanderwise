@@ -38,6 +38,62 @@ function hasEmojiInText(text) {
   return /[\p{Emoji_Presentation}\p{Emoji}\u2600-\u27BF]/u.test(text);
 }
 
+// Helper to stream mock response
+function handleMockStream(message, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Transfer-Encoding', 'chunked');
+
+  const msgLower = message.toLowerCase();
+  let replyText = "Jaipur, Goa, aur Munnar hamare sabse hot spots hain! Kahan ka ticket book karein fir? Jaipur and Goa are awesome. Bilkul mast jagah hai, zaroor jaana!";
+  
+  // Check custom queries
+  if (msgLower.includes('monsoon')) {
+    replyText = "Monsoon ke liye toh Spiti Valley ya Munnar bilkul jannat hai! Greenery dekh ke maza aa jayega, yaara. Spiti Valley and Munnar are spectacular. Bilkul mast jagah hai, zaroor jaana!";
+  } else if (msgLower.includes('budget')) {
+    replyText = "Kam budget me Hampi ya Gandikota best options hain. Wahan rehne-khane ka kharcha bohot kam hai aur views gazab ke hain! Hampi and Gandikota will fit right in. Bilkul mast jagah hai, zaroor jaana!";
+  } else if (msgLower.includes('honeymoon')) {
+    replyText = "Honeymoon ke liye Udaipur ya Havelock Island is perfect! Udaipur ki lakes aur Havelock ke white sand beaches, bohot hi romantic feel denge aapko. Udaipur and Havelock Island are beautiful. Bilkul mast jagah hai, zaroor jaana!";
+  } else if (msgLower.includes('adventure')) {
+    replyText = "Adventure chahiye toh Leh-Ladakh ya Gulmarg jao, yaara! Khardung La me bullet chalana aur Gulmarg me skiing, dono hi thrilling hain! Leh-Ladakh and Gulmarg are full of thrills. Bilkul mast jagah hai, zaroor jaana!";
+  } else if (msgLower.includes('book') || msgLower.includes('plan') || msgLower.includes('jaana hai') || msgLower.includes('want to go')) {
+    // Find matching destination or default to Gulmarg
+    let selectedDest = "Gulmarg";
+    for (let dest of destinations) {
+      if (msgLower.includes(dest.name.toLowerCase())) {
+        selectedDest = dest.name;
+        break;
+      }
+    }
+    replyText = `Arre wah! ${selectedDest} chalne ki taiyari shuru karein? Chalo, main abhi aapke liye plan bana deti hoon. [BOOKING: ${selectedDest}]`;
+  } else if (msgLower.includes('code') || msgLower.includes('math') || msgLower.includes('recipe') || msgLower.includes('coding') || msgLower.includes('javascript') || msgLower.includes('python')) {
+    replyText = "Arre, main toh sirf travel ki baatein karti hoon!";
+  }
+
+  // Split text into words/chunks and stream them
+  const words = replyText.split(' ');
+  let wordIndex = 0;
+
+  const interval = setInterval(() => {
+    if (wordIndex < words.length) {
+      const chunk = words[wordIndex] + (wordIndex === words.length - 1 ? "" : " ");
+      res.write(JSON.stringify({
+        success: true,
+        message: "chunk",
+        data: { chunk: chunk }
+      }) + '\n');
+      wordIndex++;
+    } else {
+      clearInterval(interval);
+      res.write(JSON.stringify({
+        success: true,
+        message: "Stream complete.",
+        data: { done: true }
+      }) + '\n');
+      res.end();
+    }
+  }, 80); // Stream word-by-word at a realistic pace
+}
+
 // API Endpoint 3: Chat Stream
 app.post('/api/chat', (req, res) => {
   const { message, history } = req.body;
@@ -54,59 +110,7 @@ app.post('/api/chat', (req, res) => {
   if (!apiKey || apiKey === 'your_gemini_api_key_here') {
     // FALLBACK MOCK STREAMING ENGINE FOR CONVENIENT TESTING
     console.log("No GEMINI_API_KEY configured. Falling back to local Hinglish mock streaming...");
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Transfer-Encoding', 'chunked');
-
-    const msgLower = message.toLowerCase();
-    let replyText = "Jaipur, Goa, aur Munnar hamare sabse hot spots hain! Kahan ka ticket book karein fir? Jaipur and Goa are awesome. Bilkul mast jagah hai, zaroor jaana!";
-    
-    // Check custom queries
-    if (msgLower.includes('monsoon')) {
-      replyText = "Monsoon ke liye toh Spiti Valley ya Munnar bilkul jannat hai! Greenery dekh ke maza aa jayega, yaara. Spiti Valley and Munnar are spectacular. Bilkul mast jagah hai, zaroor jaana!";
-    } else if (msgLower.includes('budget')) {
-      replyText = "Kam budget me Hampi ya Gandikota best options hain. Wahan rehne-khane ka kharcha bohot kam hai aur views gazab ke hain! Hampi and Gandikota will fit right in. Bilkul mast jagah hai, zaroor jaana!";
-    } else if (msgLower.includes('honeymoon')) {
-      replyText = "Honeymoon ke liye Udaipur ya Havelock Island is perfect! Udaipur ki lakes aur Havelock ke white sand beaches, bohot hi romantic feel denge aapko. Udaipur and Havelock Island are beautiful. Bilkul mast jagah hai, zaroor jaana!";
-    } else if (msgLower.includes('adventure')) {
-      replyText = "Adventure chahiye toh Leh-Ladakh ya Gulmarg jao, yaara! Khardung La me bullet chalana aur Gulmarg me skiing, dono hi thrilling hain! Leh-Ladakh and Gulmarg are full of thrills. Bilkul mast jagah hai, zaroor jaana!";
-    } else if (msgLower.includes('book') || msgLower.includes('plan') || msgLower.includes('jaana hai') || msgLower.includes('want to go')) {
-      // Find matching destination or default to Gulmarg
-      let selectedDest = "Gulmarg";
-      for (let dest of destinations) {
-        if (msgLower.includes(dest.name.toLowerCase())) {
-          selectedDest = dest.name;
-          break;
-        }
-      }
-      replyText = `Arre wah! ${selectedDest} chalne ki taiyari shuru karein? Chalo, main abhi aapke liye plan bana deti hoon. [BOOKING: ${selectedDest}]`;
-    } else if (msgLower.includes('code') || msgLower.includes('math') || msgLower.includes('recipe') || msgLower.includes('coding') || msgLower.includes('javascript') || msgLower.includes('python')) {
-      replyText = "Arre, main toh sirf travel ki baatein karti hoon!";
-    }
-
-    // Split text into words/chunks and stream them
-    const words = replyText.split(' ');
-    let wordIndex = 0;
-
-    const interval = setInterval(() => {
-      if (wordIndex < words.length) {
-        const chunk = words[wordIndex] + (wordIndex === words.length - 1 ? "" : " ");
-        res.write(JSON.stringify({
-          success: true,
-          message: "chunk",
-          data: { chunk: chunk }
-        }) + '\n');
-        wordIndex++;
-      } else {
-        clearInterval(interval);
-        res.write(JSON.stringify({
-          success: true,
-          message: "Stream complete.",
-          data: { done: true }
-        }) + '\n');
-        res.end();
-      }
-    }, 80); // Stream word-by-word at a realistic pace
-    return;
+    return handleMockStream(message, res);
   }
 
   // 1. Format Gemini system instruction
@@ -148,9 +152,6 @@ ${destinations.map(d => `- ${d.name} in ${d.state} (${d.category}): Cost is ₹$
     }
   });
 
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Transfer-Encoding', 'chunked');
-
   const reqObj = https.request({
     hostname: parsedUrl.hostname,
     path: parsedUrl.path,
@@ -160,10 +161,21 @@ ${destinations.map(d => `- ${d.name} in ${d.state} (${d.category}): Cost is ₹$
       'Content-Length': Buffer.byteLength(requestBody)
     }
   }, (geminiRes) => {
+    console.log(`Gemini API status: ${geminiRes.statusCode}`);
+    
+    if (geminiRes.statusCode !== 200) {
+      console.error(`Gemini API returned error status ${geminiRes.statusCode}. Falling back to local Hinglish mock streaming...`);
+      return handleMockStream(message, res);
+    }
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Transfer-Encoding', 'chunked');
+
     let buffer = '';
 
     geminiRes.on('data', (chunk) => {
-      buffer += chunk.toString();
+      const chunkStr = chunk.toString();
+      buffer += chunkStr;
       
       // Normalize CRLF to LF as requested in Phase 5
       buffer = buffer.replace(/\r\n/g, '\n');
@@ -237,13 +249,8 @@ ${destinations.map(d => `- ${d.name} in ${d.state} (${d.category}): Cost is ₹$
   });
 
   reqObj.on('error', (err) => {
-    console.error('Gemini REST connection error:', err);
-    res.write(JSON.stringify({
-      success: false,
-      message: "Arre yaar, connections me koi error aya! Ruko thoda.",
-      data: { error: err.message }
-    }) + '\n');
-    res.end();
+    console.error('Gemini REST connection error. Falling back to local Hinglish mock streaming:', err);
+    return handleMockStream(message, res);
   });
 
   reqObj.write(requestBody);

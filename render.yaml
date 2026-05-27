@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: wanderwise-api
+    env: node
+    plan: free
+    rootDir: wanderwise/server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: GEMINI_API_KEY
+        sync: false
